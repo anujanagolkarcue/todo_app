@@ -1,0 +1,29 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  # For details on connection pooling, see Rails configuration guide
+  # http://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: 5
+
+development:
+  <<: *default
+  port: 5432
+  database: todo_development
+  username: rails_dev
+  password: 123456
+
+test:
+  <<: *default
+  port: 5432
+  database: todo_test
+  username: rails_dev
+  password: 123456
+
+production:
+  <<: *default
+  port: 5432
+  database: todo_production
+  username: rails_dev
+  password: 123456789
+  # host: quotes-production.cfl1vkqqm6f0.ap-south-1.rds.amazonaws.com  #postgres-9-5-14.cfl1vkqqm6f0.ap-south-1.rds.amazonaws.com
+  

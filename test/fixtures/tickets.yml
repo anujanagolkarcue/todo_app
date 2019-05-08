@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  board: one
+  title: MyString
+  description: MyText
+  status: MyString
+  : MyString
+  starting_at: 2019-05-08 19:09:21
+  expiry_at: 2019-05-08 19:09:21
+
+two:
+  board: two
+  title: MyString
+  description: MyText
+  status: MyString
+  : MyString
+  starting_at: 2019-05-08 19:09:21
+  expiry_at: 2019-05-08 19:09:21
