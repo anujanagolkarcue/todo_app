@@ -9,6 +9,8 @@ gem 'puma', '~> 3.11'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
 
+gem 'jquery-rails'
+gem 'bootstrap', '~> 4.3.1'
 gem 'coffee-rails', '~> 4.2'
 gem 'turbolinks', '~> 5'
 
@@ -16,6 +18,7 @@ gem 'pg', '>= 0.18', '< 2.0'
 
 gem 'devise'
 gem 'aasm'
+gem 'slim'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
