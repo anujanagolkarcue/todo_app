@@ -1,10 +1,10 @@
-= form_with(model: board, local: true) do |f|
-  - if board.errors.any?
+= form_for([@board, card], local: true) do |f|
+  - if card.errors.any?
     #error_explanation
-      h2 = "#{pluralize(board.errors.count, 'error')} prohibited this board from being saved:"
+      h2 = "#{pluralize(card.errors.count, 'error')} prohibited this card from being saved:"
 
       ul
-      - board.errors.full_messages.each do |message|
+      - card.errors.full_messages.each do |message|
         li = message
 
   .form-group

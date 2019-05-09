@@ -13,6 +13,7 @@ table
       tr
         td = board.title
         td = board.description
+        td = link_to 'show', board_path(board)
         td = link_to 'Edit', edit_board_path(board)
         td = link_to 'Destroy', board, method: :delete, data: { confirm: 'Are you sure?' }
 br

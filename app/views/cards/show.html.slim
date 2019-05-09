@@ -1,5 +1,11 @@
 p#notice
 
-= link_to 'Edit', edit_board_path(@board)
-= ' | '
+h5
+  | Title
+  p = @card.title
+h5
+  | Description
+  p = @card.description
+
+= link_to 'Edit ', edit_board_path(@board)
 = link_to 'Back', boards_path

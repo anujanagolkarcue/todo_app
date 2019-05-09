@@ -8,6 +8,7 @@ class BoardsController < ApplicationController
   end
 
   def show
+    @cards = @board.cards
   end
 
   def new

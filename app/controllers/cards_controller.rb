@@ -1,28 +1,27 @@
 class CardsController < ApplicationController
-
   before_action :authenticate_user!
   before_action :set_board
   before_action :set_card, only: [:show, :edit, :update, :destroy]
 
   def index
-    @cards = Card.all
+    @cards = @board.cards
   end
 
   def show
   end
 
   def new
-    @card = Card.new
+    @card = @board.cards.new
   end
 
   def edit
   end
 
   def create
-    @card = Card.new(card_params)
+    @card = @board.cards.new(card_params)
 
     if @card.save
-      redirect_to @card, notice: 'Card was successfully created.'
+      redirect_to @board, notice: 'Card was successfully created.'
     else
       render :new
     end
@@ -30,20 +29,15 @@ class CardsController < ApplicationController
 
   def update
     if @card.update(card_params)
-      redirect_to @card, notice: 'Card was successfully updated.'
+      redirect_to @board, notice: 'Card was successfully updated.'
     else
       render :edit
     end
   end
 
-  def destroy
-    @card.destroy
-    redirect_to cards_url, notice: 'Card was successfully destroyed.'
-  end
-
   private
-    def set_card
-      @board = current_user.boards.find(params[:id])
+    def set_board
+      @board = current_user.boards.find(params[:board_id])
     end
 
     def set_card
