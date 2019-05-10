@@ -3,7 +3,6 @@ require 'test_helper'
 class CardTest < ActiveSupport::TestCase
   def setup
     @card = cards(:one)
-    puts '', @card.inspect
   end
 
   test 'invalid without title' do
@@ -25,6 +24,6 @@ class CardTest < ActiveSupport::TestCase
 
   test 'invalid without start date if end date is present' do
     @card.starting_at = nil
-    assert @card.starting_at?, 'Add validation to check start date is present if end date is available'
+    assert @card.starting_at?, 'Add validation to check presence of start date, if end date is available'
   end
 end
