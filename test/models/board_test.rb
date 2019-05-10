@@ -6,16 +6,14 @@ class BoardTest < ActiveSupport::TestCase
     @board = boards(:one)
   end
 
-  test 'invalid without title' do
+  test 'should invalidate without title' do
     @board.title = nil
-    refute @board.valid?, 'Saved board without a title'
-    refute_empty @board.errors[:title], 'no validation error for title present'
+    assert @board.valid? || @board.errors[:title], 'no validation error for title present'
   end
 
-  test 'invalid without description' do
+  test 'should invalidate without description' do
     @board.description = nil
-    refute @board.valid?, 'Saved board without a description'
-    assert_not_nil @board.errors[:description]
+    assert @board.valid? || @board.errors[:description], 'no validation error for description present'
   end
 
 end

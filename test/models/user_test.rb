@@ -6,17 +6,16 @@ class UserTest < ActiveSupport::TestCase
     @user.password = 'secret'
   end
 
-  test 'invalid without name' do
+  test 'should invalidate without name' do
     @user.firstname = nil
     @user.lastname = nil
     @user.valid?
-    refute_empty (@user.errors[:firstname] || @user.errors[:lastname]) ,
-		"No validation error for #{([:firstname, :lastname] - @user.errors.keys).join(', ')} present"
+    assert @user.errors[:firstname].present?, 'No validation error for firstname present'
+    assert @user.errors[:lastname].present?,  'No validation error for lastname present'
   end
 
-  test 'invalid without valid email' do
+  test 'should invalidate without valid email' do
     @user.email = 'email455'
-    @user.valid?
-    refute_empty @user.errors[:email], 'Accepts invalid email. No validation to check email format'
+    assert @user.valid? || @user.errors[:email].present?, 'Accepts invalid email. No validation to check email format'
   end
 end
