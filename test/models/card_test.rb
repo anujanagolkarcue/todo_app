@@ -18,7 +18,13 @@ class CardTest < ActiveSupport::TestCase
     assert_not_nil @card.errors[:description]
   end
 
-  test 'expiry_at must be greater than starting date' do
+  test 'end date must be greater than starting date' do
+    @card.expiry_at = @card.starting_at.advance(hours: -2)
+    assert @card.expiry_at > @card.starting_at, 'End date must be greater than start date'
+  end
 
+  test 'invalid without start date if end date is present' do
+    @card.starting_at = nil
+    assert @card.starting_at?, 'Add validation to check start date is present if end date is available'
   end
 end

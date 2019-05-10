@@ -6,7 +6,7 @@ class Card < ApplicationRecord
   has_one :user, through: :board
 
   validates :title, :description, presence: true
-  validate :check_end_date
+  validate :presence_of_starting_at, :check_end_date
 
   # aasm :status do
   #   state :initialized, initial: true
@@ -35,9 +35,15 @@ class Card < ApplicationRecord
 
   private
 
+  def presence_of_starting_at
+    if expiry_at?
+      self.errors[:name] << 'Start date must be present' unless starting_at?
+    end
+  end
+
   def check_end_date
-    if expiry_at < starting_at
-      self.errors[:name] << 'Expiry must be greater than start date'
+    if expiry_at? && starting_at? && expiry_at < starting_at
+      self.errors[:name] << 'End date must be greater than start date'
     end
   end
 
