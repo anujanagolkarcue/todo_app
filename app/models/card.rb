@@ -4,6 +4,8 @@ class Card < ApplicationRecord
 
   belongs_to :board
   has_one :user, through: :board
+  has_many :comments
+  has_many_attached :attachment
 
   validates :title, :description, presence: true
   validate :presence_of_starting_at, :check_end_date

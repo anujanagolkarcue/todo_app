@@ -6,6 +6,6 @@ one:
   email: emailone@example.com
 
 two:
-  firstname: Name1
-  lastname: LastName1
+  firstname: Name2
+  lastname: LastName2
   email: emailtwo@example.com

@@ -13,3 +13,19 @@
  *= require_tree .
  *= require_self
  */
+
+.btm-space-10 {
+  margin-bottom: 10px;
+}
+
+.top-space-10 {
+  margin-top: 10px;
+}
+
+.padding-10 {
+  padding: 10px;
+}
+
+.border-1 {
+  border: 1px solid #D3D3D3;
+}
