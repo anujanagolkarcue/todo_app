@@ -5,12 +5,13 @@ Rails.application.routes.draw do
   devise_for :users
 
   resources :boards do
-
-    resources :cards, except: :destroy
-
+    resources :cards, only: [:new, :create] do
+    end
   end
 
-  resources :card, only: [] do
+  resources :cards, only: [:show, :edit, :update] do
+    patch :status, on: :member
+
     resources :comments
   end
 

@@ -20,15 +20,15 @@ class Card < ApplicationRecord
     state :complete
 
     event :in_progress do
-      transitions from: [:open, :hold], to: :in_progress
+      transitions from: [:initialized, :held], to: :in_progress
     end
 
     event :hold do
-      transitions from: [:open, :hold], to: :held
+      transitions from: [:initialized, :in_progress], to: :held
     end
 
     event :approve do
-      transitions from: [:resolved], to: :approved
+      transitions from: [:complete], to: :approved
     end
 
     event :complete do
@@ -36,7 +36,7 @@ class Card < ApplicationRecord
     end
 
     event :archive do
-      transitions from: [:open, :in_progress, :hold], to: :archived
+      transitions from: [:initialized, :in_progress, :hold], to: :archived
     end
 
     event :resolve do

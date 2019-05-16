@@ -1,11 +1,7 @@
 class CardsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_board
-  before_action :set_card, only: [:show, :edit, :update, :destroy]
-
-  def index
-    @cards = @board.cards
-  end
+  before_action :set_board, only: [:new, :create]
+  before_action :set_card, except: [:index, :new, :create]
 
   def show
   end
@@ -19,9 +15,8 @@ class CardsController < ApplicationController
 
   def create
     @card = @board.cards.new(card_params)
-
     if @card.save
-      redirect_to @board, notice: 'Card was successfully created.'
+      redirect_to @card, notice: 'Card was successfully created.'
     else
       render :new
     end
@@ -29,9 +24,17 @@ class CardsController < ApplicationController
 
   def update
     if @card.update(card_params)
-      redirect_to @board, notice: 'Card was successfully updated.'
+      redirect_to @card, notice: 'Card was successfully updated.'
     else
       render :edit
+    end
+  end
+
+  def status
+    if @card.send("#{params[:status]}!")
+      redirect_to @card, notice: "Card updated to #{@card.status}."
+    else
+      redirect_to @card, notice: "Card was not updated to #{@card.status}."
     end
   end
 
@@ -41,7 +44,7 @@ class CardsController < ApplicationController
     end
 
     def set_card
-      @card = @board.cards.find(params[:id])
+      @card = (@board.try(:cards) || Card).find(params[:id])
     end
 
     def card_params
