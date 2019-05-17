@@ -4,7 +4,7 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
   setup do
-    @board = build(:board)
+    @board = create(:board)
     sign_in(@board.user)
   end
 
@@ -19,39 +19,52 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create board" do
-    assert_difference('Board.count') do
-      post boards_url, params: {board: @board.slice(:title, :description)}
-    end
+    params = attributes_for(:board)
+    post boards_url, params: {board: params}
+    board = Board.find_by(params)
+    assert board.present?
+    assert_redirected_to board_url(board)
+  end
 
-    assert_redirected_to board_url(Board.last)
+  test 'should not create board with invalid data' do
+    params = @board.slice(:title, :description)
+    post boards_url, params: {board: params}
+    assert Board.where(params).count, 1
   end
 
   test "should show board" do
-    @board.save
     get board_url(@board)
     assert_response :success
   end
 
   test "should get edit" do
-    @board.save
     get edit_board_url(@board)
     assert_response :success
   end
 
   test "should update board" do
-    @board.save
     params = {title: 'New Title', description: 'New description'}.with_indifferent_access
     patch board_url(@board), params: {board: params}
     assert_equal params, @board.reload.slice(:title, :description)
     assert_redirected_to board_url(@board)
   end
 
-  test "should destroy board" do
-    @board.save
-    assert_difference('Board.count', -1) do
-      delete board_url(@board)
-    end
+  test 'should not update board with invalid data' do
+    new_board = create(:board, user: @board.user)
+    patch board_url(new_board), params: {board: @board.slice(:title, :description)}
+    assert new_board, new_board.reload
+  end
 
+  test "should destroy board" do
+    delete board_url(@board)
     assert_redirected_to boards_url
+    assert_equal flash[:notice], 'Board was successfully destroyed.'
+  end
+
+  test "should not destroy board if cards exists" do
+    create(:card, board: @board)
+    delete board_url(@board)
+    assert_redirected_to boards_url
+    assert_equal flash[:error], 'Cannot delete while cards exists.'
   end
 end

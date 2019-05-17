@@ -37,8 +37,12 @@ class BoardsController < ApplicationController
   end
 
   def destroy
-    @board.destroy
-    redirect_to boards_url, notice: 'Board was successfully destroyed.'
+    if @board.destroy
+      redirect_to boards_url, notice: 'Board was successfully destroyed.'
+    else
+      flash[:error] = 'Cannot delete while cards exists.'
+      redirect_to boards_url
+    end
   end
 
   private

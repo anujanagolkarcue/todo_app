@@ -16,13 +16,17 @@ class CardsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create card" do
-    board = @card.board
-    @card = build(:card)
-    assert_difference('Card.count') do
-      post board_cards_url(board), params: {card: attributes_for(:card)}
-    end
+    params = attributes_for(:card)
+    post board_cards_url(@card.board), params: {card: params}
+    card = @card.board.cards.find_by(params.slice(:title, :description))
+    assert card.present?
+    assert_redirected_to card_url(card)
+  end
 
-    assert_redirected_to card_url(Card.last)
+  test 'should not create card with invalid data' do
+    params = @card.slice(:title, :description)
+    post board_cards_url(@card.board), params: {card: params}
+    assert Card.where(params).count, 1
   end
 
   test "should show card" do
@@ -36,64 +40,61 @@ class CardsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update card" do
-    patch card_url(@card), params: {card: attributes_for(:card)}
+    params = {title: 'New Title', description: 'New description'}.with_indifferent_access
+    patch card_url(@card), params: {card: params}
+    assert_equal params, @card.reload.slice(:title, :description)
     assert_redirected_to card_url(@card)
   end
 
-  test 'should move to in progress state' do
-    patch status_card_url(@card), params: {status: :in_progress}
-    assert @card.reload.in_progress?, "Status was not updated to 'in_progress'"
+  test 'should not update card with invalid data' do
+    new_card = create(:card, user: @card.user)
+    patch card_url(new_card), params: {card: @card.slice(:title, :description)}
+    assert new_card, new_card.reload
+  end
+
+  test 'should move from initialized to in progress state' do
+    update_status(:in_progress)
   end
 
   test 'should move from held to in progress state' do
-    @card.hold!
-    patch status_card_url(@card), params: {status: :in_progress}
-    assert @card.reload.in_progress?, "Status was not updated to 'in_progress'"
+    update_status(:hold, [:in_progress])
   end
 
   test 'should move from initialized to held state' do
-    patch status_card_url(@card), params: {status: :hold}
-    assert @card.reload.held?, "Status was not updated to 'held'"
+    update_status(:hold)
   end
 
   test 'should move from in_progress to held state' do
-    @card.in_progress!
-    patch status_card_url(@card), params: {status: :hold}
-    assert @card.reload.held?, "Status was not updated to 'held'"
+    update_status(:hold, [:in_progress])
   end
 
   test 'should move to approved state' do
-    @card.update_attributes(status: :complete)
-    patch status_card_url(@card), params: {status: :approve}
-    assert @card.reload.approved?, "Status was not updated to 'approved'"
+    update_status(:approve, [:in_progress, :complete])
   end
 
   test 'should move to complete state' do
-    @card.in_progress!
-    patch status_card_url(@card), params: {status: :complete}
-    assert @card.reload.complete?, "Status was not updated to 'complete'"
+    update_status(:complete, [:in_progress])
   end
 
   test 'should move to resolved state' do
-    @card.update_attributes(status: :approved)
-    patch status_card_url(@card), params: {status: :resolve}
-    assert @card.reload.resolved?, "Status was not updated to 'resolved'"
+    update_status(:resolve, [:in_progress, :complete, :approve])
   end
 
   test 'should move from initialized to archived state' do
-    patch status_card_url(@card), params: {status: :archive}
-    assert @card.reload.archived?, "Status was not updated to 'archived'"
+    update_status(:archive)
   end
 
   test 'should move from in_progress to archived state' do
-    @card.status = :in_progress
-    patch status_card_url(@card), params: {status: :archive}
-    assert @card.reload.archived?, "Status was not updated to 'archived'"
+    update_status(:archive, [:in_progress])
   end
 
   test 'should move from held to archived state' do
-    @card.status = :held
-    patch status_card_url(@card), params: {status: :archive}
-    assert @card.reload.archived?, "Status was not updated to 'archived'"
+    update_status(:archive, [:hold])
+  end
+
+  def update_status(event, initial_events = [])
+    initial_events.each { |ie| @card.send("#{ie}!") }
+    patch status_card_url(@card), params: {status: event}
+    assert_equal flash[:notice], "Card updated to #{Card.events_with_transition_state[event]}."
   end
 end

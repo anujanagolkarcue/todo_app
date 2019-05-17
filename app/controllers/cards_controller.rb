@@ -34,7 +34,16 @@ class CardsController < ApplicationController
     if @card.send("#{params[:status]}!")
       redirect_to @card, notice: "Card updated to #{@card.status}."
     else
-      redirect_to @card, notice: "Card was not updated to #{@card.status}."
+      redirect_to @card, error: "Card was not updated to #{@card.status}."
+    end
+  end
+
+  def destroy
+    if @card.destroy
+      redirect_to cards_url, notice: 'Card was successfully destroyed.'
+    else
+      flash[:error] = 'Cannot delete card.'
+      redirect_to cards_url
     end
   end
 

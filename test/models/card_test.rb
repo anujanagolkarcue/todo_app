@@ -35,9 +35,70 @@ class CardTest < ActiveSupport::TestCase
     assert @card.errors[:status].present?, 'Status is invalid'
   end
 
-  test 'should create card' do
-    assert_difference('Card.count', 1, 'Card was not created') do
-      @card.save
-    end
+  test "should create card" do
+    @card = build(:card)
+    assert @card.save
+  end
+
+  test 'should destroy card' do
+    @card.destroy
+    assert Card.find_by_id(@card.id).blank?
+  end
+
+  test 'should not destroy card if comment is present' do
+    @card.save
+    @card.comments.create(attributes_for(:comment).merge(user_id: @card.user.id))
+    assert !@card.destroy
+  end
+
+  test 'should not destroy card if status is not initialized' do
+    @card.in_progress!
+    assert !@card.destroy
+  end
+
+  test 'should move from initialized to in progress state' do
+    update_status(:in_progress)
+  end
+
+  test 'should move from held to in progress state' do
+    update_status(:hold, [:in_progress])
+  end
+
+  test 'should move from initialized to held state' do
+    update_status(:hold)
+  end
+
+  test 'should move from in_progress to held state' do
+    update_status(:hold, [:in_progress])
+  end
+
+  test 'should move to approved state' do
+    update_status(:approve, [:in_progress, :complete])
+  end
+
+  test 'should move to complete state' do
+    update_status(:complete, [:in_progress])
+  end
+
+  test 'should move to resolved state' do
+    update_status(:resolve, [:in_progress, :complete, :approve])
+  end
+
+  test 'should move from initialized to archived state' do
+    update_status(:archive)
+  end
+
+  test 'should move from in_progress to archived state' do
+    update_status(:archive, [:in_progress])
+  end
+
+  test 'should move from held to archived state' do
+    update_status(:archive, [:hold])
+  end
+
+  def update_status(event, initial_events = [])
+    initial_events.each { |ie| @card.send("#{ie}!") }
+    @card.send("#{event}!")
+    assert @card.send("#{Card.events_with_transition_state[event]}?")
   end
 end

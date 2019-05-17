@@ -1,6 +1,6 @@
 FactoryGirl.define do  
   factory :card do  
-    title Faker::Lorem.sentence  
+    title { Faker::Lorem.sentence }
     description Faker::Lorem.paragraph  
     starting_at { Time.now }
     expiry_at { Time.now.advance(days: 3) }
