@@ -3,7 +3,10 @@ pipeline {
     stages {
         stage('Build') {
             when {
-                branch 'master'
+                anyOf {
+                    branch 'master'
+                    branch pattern: "/(?i)^.*-backend", comparator: "REGEXP"
+                }
             }
             steps {
                 sh 'echo "My first pipeline"'
