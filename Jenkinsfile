@@ -4,8 +4,8 @@ pipeline {
         stage('Build') {
             when {
                 anyOf {
-                    { branch 'develop' }
-                    { branch "/(?i)^.*-backend" }
+                     L:{ branch 'develop' }
+                     L:{ branch "/(?i)^.*-backend" }
                 }
             }
             steps {
