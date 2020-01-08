@@ -8,6 +8,9 @@ pipeline {
                     echo "By the way, I can do more stuff in here"
                     ls -lah
                 '''
+                sh '''
+                   echo "Branch Name ===> ${env.BRANCH_NAME}"
+                '''
             }
         }
     }
