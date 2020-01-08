@@ -4,8 +4,8 @@ pipeline {
         stage('Build') {
             when {
                 anyOf {
-                    branch 'develop'
-                    or { branch pattern: "/(?i)^.*-backend", comparator: "REGEXP" }
+                    { branch 'develop' }
+                    { branch "/(?i)^.*-backend" }
                 }
             }
             steps {
@@ -15,9 +15,7 @@ pipeline {
         }
         stage('Test') {
             when {
-                anyOf {
-                    branch pattern: "/(?i)^.*-backend", comparator: "REGEXP"
-                }
+                branch pattern: "/(?i)^.*-backend", comparator: "REGEXP"
             }
             steps {
                 sh 'echo "In Test"'
@@ -26,9 +24,7 @@ pipeline {
         }
         stage('Test2') {
             when {
-                anyOf {
-                    branch pattern: "/(?i)^.*-backend", comparator: "REGEXP"
-                }
+                branch "/(?i)^.*-backend"
             }
             steps {
                 sh 'echo "In Test"'
