@@ -15,7 +15,7 @@ gem 'turbolinks', '~> 5'
 
 gem 'pg', '>= 0.18', '< 2.0'
 
-gem 'devise', '4.6.2'
+gem 'devise', '4.7.1'
 gem 'aasm', '5.0.3'
 gem 'slim', '4.0.1'
 
