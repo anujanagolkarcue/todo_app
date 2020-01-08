@@ -4,8 +4,8 @@ pipeline {
         stage('Build') {
             when {
                 anyOf {
-                     L:{ branch 'develop' }
-                     L:{ branch "/(?i)^.*-backend" }
+                    expression{ env.BRANCH_NAME == 'develop' }
+                    expression{ env.BRANCH_NAME =~ /(?i)^.*-backend }
                 }
             }
             steps {
